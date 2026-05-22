@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grafana Dashboards — Engineering Team Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0d;
+    --bg2: #111318;
+    --bg3: #181c23;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --accent: #f97316;
+    --accent2: #fb923c;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --pink: #ec4899;
+    --teal: #14b8a6;
+    --yellow: #eab308;
+    --red: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* GRID LINES */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,11,13,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo span {
+    color: var(--accent);
+  }
+
+  .nav-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #000 !important;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .nav-cta:hover { background: var(--accent2) !important; color: #000 !important; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 2rem 60px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(249,115,22,0.1);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title .line2 {
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-title .line3 {
+    color: var(--muted);
+    display: block;
+    font-weight: 400;
+    font-size: 0.55em;
+    letter-spacing: -0.01em;
+    margin-top: 0.5rem;
+  }
+
+  .hero-desc {
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    display: block;
+  }
+
+  .stat-num span { color: var(--accent); }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* SECTION LAYOUT */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+  }
+
+  .section-tag {
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border: 1px solid rgba(249,115,22,0.3);
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  /* TEAM SECTION */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .team-card {
+    background: var(--bg2);
+    padding: 2rem;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .team-card:hover { background: var(--bg3); }
+
+  .team-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .team-card:hover::before { opacity: 1; }
+
+  .tc-sre::before { background: var(--green); }
+  .tc-devops::before { background: var(--purple); }
+  .tc-backend::before { background: var(--blue); }
+  .tc-data::before { background: var(--teal); }
+  .tc-db::before { background: var(--pink); }
+  .tc-security::before { background: var(--red); }
+
+  .team-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .team-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .ti-sre { background: rgba(34,197,94,0.1); color: var(--green); }
+  .ti-devops { background: rgba(168,85,247,0.1); color: var(--purple); }
+  .ti-backend { background: rgba(59,130,246,0.1); color: var(--blue); }
+  .ti-data { background: rgba(20,184,166,0.1); color: var(--teal); }
+  .ti-db { background: rgba(236,72,153,0.1); color: var(--pink); }
+  .ti-security { background: rgba(239,68,68,0.1); color: var(--red); }
+
+  .team-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .team-companies {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* DASHBOARD ITEM */
+  .dash-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .dash-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .dash-item:hover {
+    border-color: var(--border2);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .dash-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .dash-item-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .dash-id {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .dash-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .use-case-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .use-cases {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .uc-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  /* METRICS PANELS */
+  .panels-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+    max-width: 100%;
+    padding: 80px 2rem;
+  }
+
+  .panels-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .panels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-top: 2rem;
+  }
+
+  .panel-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .panel-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, rgba(249,115,22,0.04));
+    pointer-events: none;
+  }
+
+  .panel-type {
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .panel-metric {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .panel-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .spark {
+    height: 40px;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+  }
+
+  .spark-bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    transition: height 0.3s;
+  }
+
+  /* QUERY SECTION */
+  .query-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .query-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .query-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .query-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .query-team {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .query-body {
+    padding: 16px;
+    font-size: 11px;
+    color: #7dd3fc;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+
+  .q-keyword { color: #c084fc; }
+  .q-func { color: #fb923c; }
+  .q-string { color: #86efac; }
+  .q-comment { color: var(--muted); }
+
+  /* SETUP GUIDE */
+  .setup-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .step-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .step-code {
+    margin-top: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 11px;
+    color: var(--accent2);
+    overflow-x: auto;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+
+  .footer-logo span { color: var(--accent); }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--text); }
+
+  .footer-copy {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  /* COLOR IDS */
+  .id-sre { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .id-devops { background: rgba(168,85,247,0.1); color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
+  .id-backend { background: rgba(59,130,246,0.1); color: var(--blue); border: 1px solid rgba(59,130,246,0.2); }
+  .id-data { background: rgba(20,184,166,0.1); color: var(--teal); border: 1px solid rgba(20,184,166,0.2); }
+  .id-db { background: rgba(236,72,153,0.1); color: var(--pink); border: 1px solid rgba(236,72,153,0.2); }
+  .id-security { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+
+  /* FADE IN */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .query-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1.5rem; }
+  }
+
+  /* GITHUB BANNER */
+  .github-banner {
+    background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(168,85,247,0.08));
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 3rem;
+    text-align: center;
+    margin: 0 auto;
+    max-width: 700px;
+  }
+
+  .github-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .github-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--text);
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--border2);
+    font-family: 'JetBrains Mono', monospace;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-outline:hover { border-color: var(--accent); background: rgba(249,115,22,0.05); }
+
+  .repo-url {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .repo-url a { color: var(--accent); text-decoration: none; }
+  .repo-url a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-dot"></div>
+    Grafana<span>Ref</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#teams">Teams</a></li>
+    <li><a href="#queries">Queries</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#github" class="nav-cta">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div>
+    <div class="hero-badge fade-in">
+      <span>●</span> Production-Grade Reference
+    </div>
+    <h1 class="hero-title fade-in delay-1">
+      Grafana
+      <span class="line2">Dashboards</span>
+      <span class="line3">by engineering team · use cases · PromQL</span>
+    </h1>
+    <p class="hero-desc fade-in delay-2">
+      A curated reference of the most impactful Grafana dashboards used across SRE, DevOps, Backend, Data, Database, and Security teams at leading tech companies — with real use cases and ready-to-use queries.
+    </p>
+    <div class="hero-stats fade-in delay-3">
+      <div class="stat-item">
+        <span class="stat-num">24<span>+</span></span>
+        <span class="stat-label">Dashboards</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">6</span>
+        <span class="stat-label">Teams</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">40<span>+</span></span>
+        <span class="stat-label">Use Cases</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">12<span>+</span></span>
+        <span class="stat-label">PromQL Queries</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEAMS SECTION -->
+<section id="teams">
+  <div class="section-header">
+    <span class="section-tag">Teams</span>
+    <h2 class="section-title">Dashboards by Engineering Team</h2>
+  </div>
+  <div class="team-grid">
+
+    <!-- SRE -->
+    <div class="team-card tc-sre">
+      <div class="team-label">
+        <div class="team-icon ti-sre">⚙</div>
+        <div>
+          <div class="team-name">SRE / Platform Engineering</div>
+          <div class="team-companies">Google · Netflix · Uber · Cloudflare</div>
+        </div>
+      </div>
+      <div class="dash-list">
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Node Exporter Full</div>
+            <span class="dash-id id-sre">ID 1860</span>
+          </div>
+          <div class="dash-desc">The most-downloaded dashboard on Grafana with 20M+ installs. Covers CPU, memory, disk I/O, network, filesystem usage and load average per host with full drill-down capability.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Host fleet health</span>
+            <span class="uc-tag">Capacity planning</span>
+            <span class="uc-tag">Incident triage</span>
+            <span class="uc-tag">VM rightsizing</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Kubernetes Cluster Overview</div>
+            <span class="dash-id id-sre">ID 7249</span>
+          </div>
+          <div class="dash-desc">End-to-end visibility into pod status, resource quotas, node pressure, namespace usage, scheduling events, and HPA scaling activity across all k8s clusters.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Pod crash loops</span>
+            <span class="uc-tag">OOMKilled detection</span>
+            <span class="uc-tag">Namespace quotas</span>
+            <span class="uc-tag">Cluster autoscaler</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">USE Method: System</div>
+            <span class="dash-id id-sre">ID 405</span>
+          </div>
+          <div class="dash-desc">Brendan Gregg's Utilization/Saturation/Errors methodology applied per resource. Enables systematic performance analysis by identifying bottlenecks before they become outages.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Bottleneck analysis</span>
+            <span class="uc-tag">Pre-incident signals</span>
+            <span class="uc-tag">SLO burn rate</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Alertmanager Overview</div>
+            <span class="dash-id id-sre">ID 9578</span>
+          </div>
+          <div class="dash-desc">Full visibility into active alerts, silences, inhibitions, firing groups and notification routing. Essential for on-call teams managing alert fatigue.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Alert fatigue</span>
+            <span class="uc-tag">On-call operations</span>
+            <span class="uc-tag">Silence management</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEVOPS -->
+    <div class="team-card tc-devops">
+      <div class="team-label">
+        <div class="team-icon ti-devops">⬡</div>
+        <div>
+          <div class="team-name">DevOps / CI-CD</div>
+          <div class="team-companies">Shopify · Atlassian · GitLab · Wolt</div>
+        </div>
+      </div>
+      <div class="dash-list">
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">GitHub Actions Metrics</div>
+            <span class="dash-id id-devops">Custom</span>
+          </div>
+          <div class="dash-desc">Tracks workflow run durations, failure rates, queue times, runner pool utilization, and per-repository CI cost over time. Hooks into GitHub's REST API via custom exporter.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">CI cost optimization</span>
+            <span class="uc-tag">Slow build detection</span>
+            <span class="uc-tag">Flaky job tracking</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">ArgoCD Application Status</div>
+            <span class="dash-id id-devops">ID 14584</span>
+          </div>
+          <div class="dash-desc">GitOps health at a glance: sync status, health grade, rollout progress, drift detection and reconciliation lag across all ArgoCD-managed applications.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Drift detection</span>
+            <span class="uc-tag">Rollout monitoring</span>
+            <span class="uc-tag">GitOps compliance</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">DORA Metrics</div>
+            <span class="dash-id id-devops">Custom</span>
+          </div>
+          <div class="dash-desc">Deployment frequency, lead time for changes, mean time to restore (MTTR), and change failure rate visualized over rolling 30/90-day windows. Industry benchmark for engineering velocity.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Engineering velocity</span>
+            <span class="uc-tag">Quarterly reviews</span>
+            <span class="uc-tag">Team benchmarking</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Terraform Cloud Runs</div>
+            <span class="dash-id id-devops">Custom</span>
+          </div>
+          <div class="dash-desc">Plan/apply duration trends, resource change deltas, drift events, error rates and workspace-level cost estimates from the Terraform Cloud API.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">IaC visibility</span>
+            <span class="uc-tag">Drift monitoring</span>
+            <span class="uc-tag">Cost tracking</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACKEND -->
+    <div class="team-card tc-backend">
+      <div class="team-label">
+        <div class="team-icon ti-backend">◈</div>
+        <div>
+          <div class="team-name">Backend / API Engineering</div>
+          <div class="team-companies">Stripe · Twilio · Cloudflare · Figma</div>
+        </div>
+      </div>
+      <div class="dash-list">
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">RED Method Dashboard</div>
+            <span class="dash-id id-backend">Custom</span>
+          </div>
+          <div class="dash-desc">Rate (requests/sec), Errors (error rate %), and Duration (p50/p95/p99 latency) per microservice endpoint. Tom Wilkie's methodology — the standard at Stripe and Twilio for API health SLOs.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">API SLO tracking</span>
+            <span class="uc-tag">Latency regressions</span>
+            <span class="uc-tag">Error budgets</span>
+            <span class="uc-tag">Microservice health</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">NGINX Ingress Metrics</div>
+            <span class="dash-id id-backend">ID 9614</span>
+          </div>
+          <div class="dash-desc">Ingress-level request throughput, 4xx/5xx error rates, latency percentile heatmaps, upstream response times, active connections and TLS handshake durations.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Traffic ingestion</span>
+            <span class="uc-tag">DDoS impact</span>
+            <span class="uc-tag">TLS issues</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Jaeger / Tempo Traces</div>
+            <span class="dash-id id-backend">Custom</span>
+          </div>
+          <div class="dash-desc">Distributed trace latency heatmap with service dependency graph, error span drill-down, root cause tagging and trace comparison across deployments.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Root cause analysis</span>
+            <span class="uc-tag">Service dependency</span>
+            <span class="uc-tag">Trace comparison</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">gRPC Server Metrics</div>
+            <span class="dash-id id-backend">ID 9733</span>
+          </div>
+          <div class="dash-desc">RPC method-level call rates, latency histograms, status code breakdown, stream counts and connection pool health for internal gRPC service meshes.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">RPC monitoring</span>
+            <span class="uc-tag">Service mesh health</span>
+            <span class="uc-tag">gRPC errors</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA / ML -->
+    <div class="team-card tc-data">
+      <div class="team-label">
+        <div class="team-icon ti-data">⬡</div>
+        <div>
+          <div class="team-name">Data Engineering / ML</div>
+          <div class="team-companies">Meta · Airbnb · OpenAI · Databricks</div>
+        </div>
+      </div>
+      <div class="dash-list">
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Apache Kafka Overview</div>
+            <span class="dash-id id-data">ID 7589</span>
+          </div>
+          <div class="dash-desc">Topic-level throughput, consumer group lag, partition leadership health, broker JVM heap, ISR shrink rate and replication lag. Consumer lag is the #1 signal for data pipeline health.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Consumer lag alerts</span>
+            <span class="uc-tag">Pipeline bottleneck</span>
+            <span class="uc-tag">Broker capacity</span>
+            <span class="uc-tag">Replication health</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">MLflow Experiment Tracker</div>
+            <span class="dash-id id-data">Custom</span>
+          </div>
+          <div class="dash-desc">Training loss curves, validation accuracy trends, GPU/CPU resource consumption per experiment, model registry promotion events and experiment comparison across runs.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Training monitoring</span>
+            <span class="uc-tag">GPU efficiency</span>
+            <span class="uc-tag">Experiment compare</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Spark Structured Streaming</div>
+            <span class="dash-id id-data">ID 12477</span>
+          </div>
+          <div class="dash-desc">Micro-batch duration, input rows/sec, processing rate vs trigger interval, memory spill, shuffle read/write and streaming query latency per Spark application.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Streaming lag</span>
+            <span class="uc-tag">Memory spill</span>
+            <span class="uc-tag">Backpressure</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">NVIDIA GPU Cluster</div>
+            <span class="dash-id id-data">ID 12239</span>
+          </div>
+          <div class="dash-desc">Per-GPU utilization, memory bandwidth, temperature, power draw, NVLINK throughput and CUDA context counts. Critical for LLM training infrastructure at AI labs.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">GPU utilization</span>
+            <span class="uc-tag">Training jobs</span>
+            <span class="uc-tag">Thermal throttle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="team-card tc-db">
+      <div class="team-label">
+        <div class="team-icon ti-db">◉</div>
+        <div>
+          <div class="team-name">Database Engineering</div>
+          <div class="team-companies">Notion · Figma · LinkedIn · Supabase</div>
+        </div>
+      </div>
+      <div class="dash-list">
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">PostgreSQL Overview</div>
+            <span class="dash-id id-db">ID 9628</span>
+          </div>
+          <div class="dash-desc">QPS by query type, active/idle connections, cache hit ratio (critical signal), lock waits, autovacuum activity, replication lag and table/index bloat per database.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Query degradation</span>
+            <span class="uc-tag">Lock contention</span>
+            <span class="uc-tag">Replication lag</span>
+            <span class="uc-tag">Bloat detection</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Redis Exporter</div>
+            <span class="dash-id id-db">ID 763</span>
+          </div>
+          <div class="dash-desc">Commands/sec, cache hit/miss ratio, keyspace hit rate, memory fragmentation ratio, eviction rates, expired keys and replication offset per Redis instance.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Cache efficiency</span>
+            <span class="uc-tag">Eviction pressure</span>
+            <span class="uc-tag">Memory sizing</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Elasticsearch Cluster</div>
+            <span class="dash-id id-db">ID 2322</span>
+          </div>
+          <div class="dash-desc">Index rate and search latency by index, shard allocation across nodes, JVM heap pressure, garbage collection pauses, circuit breaker trips and segment merge rates.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Search latency</span>
+            <span class="uc-tag">Shard allocation</span>
+            <span class="uc-tag">GC pressure</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">ClickHouse Performance</div>
+            <span class="dash-id id-db">ID 14192</span>
+          </div>
+          <div class="dash-desc">OLAP query throughput, merge performance, part counts, INSERT throughput, memory usage per query and background task health. Key for analytics-heavy stacks.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">OLAP performance</span>
+            <span class="uc-tag">Merge storms</span>
+            <span class="uc-tag">Ingestion rate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="team-card tc-security">
+      <div class="team-label">
+        <div class="team-icon ti-security">⊕</div>
+        <div>
+          <div class="team-name">Security / SecOps</div>
+          <div class="team-companies">Cloudflare · Datadog · Palo Alto · CrowdStrike</div>
+        </div>
+      </div>
+      <div class="dash-list">
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Falco Runtime Security</div>
+            <span class="dash-id id-security">Custom</span>
+          </div>
+          <div class="dash-desc">Container syscall violations, privilege escalation attempts, suspicious process spawns and file system writes per pod/namespace. Feeds directly from Falco's Prometheus metrics endpoint.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Container threats</span>
+            <span class="uc-tag">Privilege escalation</span>
+            <span class="uc-tag">Runtime anomalies</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Auth0 / Okta Login Metrics</div>
+            <span class="dash-id id-security">Custom</span>
+          </div>
+          <div class="dash-desc">Login success/failure rates, MFA adoption and bypass attempts, suspicious geo-distribution of logins, token refresh rates and session anomaly detection.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Brute force</span>
+            <span class="uc-tag">MFA compliance</span>
+            <span class="uc-tag">Geo anomaly</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">WAF / DDoS Overview</div>
+            <span class="dash-id id-security">Custom</span>
+          </div>
+          <div class="dash-desc">Blocked request rate by WAF rule, attack signature triggers, geographic source heatmap of malicious traffic, rate limit hits and bot score distribution.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Attack detection</span>
+            <span class="uc-tag">Bot traffic</span>
+            <span class="uc-tag">Rule tuning</span>
+          </div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-header">
+            <div class="dash-item-name">Certificate Expiry Monitor</div>
+            <span class="dash-id id-security">ID 13230</span>
+          </div>
+          <div class="dash-desc">Days-to-expiry per TLS certificate, issuer breakdown, auto-renewal pipeline health, certificate chain validity and HSTS configuration status across all services.</div>
+          <div class="use-case-label">Use Cases</div>
+          <div class="use-cases">
+            <span class="uc-tag">Cert rotation</span>
+            <span class="uc-tag">Expiry alerts</span>
+            <span class="uc-tag">mTLS tracking</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SAMPLE QUERIES -->
+<section id="queries">
+  <div class="section-header">
+    <span class="section-tag">PromQL</span>
+    <h2 class="section-title">Essential Query Reference</h2>
+  </div>
+  <div class="query-grid">
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">CPU Utilization per Host</div>
+        <div class="query-team">SRE</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// Average CPU usage across all cores, 5m window</span><br>
+<span class="q-func">100</span> - (<span class="q-func">avg</span> by (instance) (<br>
+&nbsp;&nbsp;<span class="q-func">rate</span>(node_cpu_seconds_total{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="q-string">mode="idle"</span><br>
+&nbsp;&nbsp;}[5m])<br>
+) * <span class="q-func">100</span>)
+      </div>
+    </div>
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">Kafka Consumer Lag</div>
+        <div class="query-team">Data Eng</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// Total lag across all partitions per consumer group</span><br>
+<span class="q-func">sum</span> by (consumergroup, topic) (<br>
+&nbsp;&nbsp;kafka_consumergroup_lag{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="q-string">topic!="__consumer_offsets"</span><br>
+&nbsp;&nbsp;}<br>
+)
+      </div>
+    </div>
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">API Error Rate (RED)</div>
+        <div class="query-team">Backend</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// % of requests returning 5xx errors, 1m rate</span><br>
+<span class="q-func">sum</span>(<span class="q-func">rate</span>(http_requests_total{<br>
+&nbsp;&nbsp;<span class="q-string">status=~"5.."</span><br>
+}[1m])) /<br>
+<span class="q-func">sum</span>(<span class="q-func">rate</span>(http_requests_total[1m]))<br>
+* <span class="q-func">100</span>
+      </div>
+    </div>
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">PostgreSQL Cache Hit Ratio</div>
+        <div class="query-team">Database</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// Ratio of cache hits vs disk reads — target >99%</span><br>
+<span class="q-func">sum</span>(pg_stat_bgwriter_buffers_clean) /<br>
+(<br>
+&nbsp;&nbsp;<span class="q-func">sum</span>(pg_stat_bgwriter_buffers_clean) +<br>
+&nbsp;&nbsp;<span class="q-func">sum</span>(pg_stat_bgwriter_buffers_backend)<br>
+) * <span class="q-func">100</span>
+      </div>
+    </div>
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">Pod OOMKilled Count</div>
+        <div class="query-team">SRE / K8s</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// Pods terminated by OOM killer in last 15m</span><br>
+<span class="q-func">increase</span>(<br>
+&nbsp;&nbsp;kube_pod_container_status_restarts_total{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="q-string">reason="OOMKilled"</span><br>
+&nbsp;&nbsp;}[<span class="q-func">15m</span>]<br>
+)
+      </div>
+    </div>
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">p99 API Latency</div>
+        <div class="query-team">Backend</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// 99th percentile request latency by service</span><br>
+<span class="q-func">histogram_quantile</span>(<span class="q-func">0.99</span>,<br>
+&nbsp;&nbsp;<span class="q-func">sum</span> by (service, le) (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="q-func">rate</span>(http_duration_bucket[5m])<br>
+&nbsp;&nbsp;)<br>
+)
+      </div>
+    </div>
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">Redis Hit Rate</div>
+        <div class="query-team">Database</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// Cache hit ratio — low values = memory pressure</span><br>
+<span class="q-func">rate</span>(redis_keyspace_hits_total[5m]) /<br>
+(<br>
+&nbsp;&nbsp;<span class="q-func">rate</span>(redis_keyspace_hits_total[5m]) +<br>
+&nbsp;&nbsp;<span class="q-func">rate</span>(redis_keyspace_misses_total[5m])<br>
+) * <span class="q-func">100</span>
+      </div>
+    </div>
+
+    <div class="query-card">
+      <div class="query-header">
+        <div class="query-title">GPU Utilization (NVIDIA)</div>
+        <div class="query-team">ML / Data</div>
+      </div>
+      <div class="query-body">
+<span class="q-comment">// Per-GPU utilization across training cluster</span><br>
+<span class="q-func">avg</span> by (gpu, instance) (<br>
+&nbsp;&nbsp;DCGM_FI_DEV_GPU_UTIL{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="q-string">job="dcgm-exporter"</span><br>
+&nbsp;&nbsp;}<br>
+)
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PANELS SECTION -->
+<div class="panels-section">
+  <div class="panels-inner">
+    <div class="section-header">
+      <span class="section-tag">Sample Panels</span>
+      <h2 class="section-title">What These Dashboards Look Like</h2>
+    </div>
+    <div class="panels-grid">
+      <div class="panel-card">
+        <div class="panel-type">Time Series · SRE</div>
+        <div class="panel-metric" style="color: var(--green);">94.2%</div>
+        <div class="panel-label">CPU Idle · prod-node-03</div>
+        <div class="spark">
+          <div class="spark-bar" style="height:60%;background:rgba(34,197,94,0.3);"></div>
+          <div class="spark-bar" style="height:75%;background:rgba(34,197,94,0.3);"></div>
+          <div class="spark-bar" style="height:55%;background:rgba(34,197,94,0.3);"></div>
+          <div class="spark-bar" style="height:80%;background:rgba(34,197,94,0.3);"></div>
+          <div class="spark-bar" style="height:45%;background:rgba(34,197,94,0.3);"></div>
+          <div class="spark-bar" style="height:90%;background:rgba(34,197,94,0.4);"></div>
+          <div class="spark-bar" style="height:94%;background:rgba(34,197,94,0.6);"></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-type">Gauge · Backend</div>
+        <div class="panel-metric" style="color: var(--yellow);">0.32%</div>
+        <div class="panel-label">Error Rate · payment-api</div>
+        <div class="spark">
+          <div class="spark-bar" style="height:10%;background:rgba(234,179,8,0.3);"></div>
+          <div class="spark-bar" style="height:15%;background:rgba(234,179,8,0.3);"></div>
+          <div class="spark-bar" style="height:8%;background:rgba(234,179,8,0.3);"></div>
+          <div class="spark-bar" style="height:40%;background:rgba(234,179,8,0.5);"></div>
+          <div class="spark-bar" style="height:20%;background:rgba(234,179,8,0.4);"></div>
+          <div class="spark-bar" style="height:12%;background:rgba(234,179,8,0.3);"></div>
+          <div class="spark-bar" style="height:30%;background:rgba(234,179,8,0.4);"></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-type">Histogram · Backend</div>
+        <div class="panel-metric" style="color: var(--blue);">42ms</div>
+        <div class="panel-label">p99 Latency · api-gateway</div>
+        <div class="spark">
+          <div class="spark-bar" style="height:35%;background:rgba(59,130,246,0.3);"></div>
+          <div class="spark-bar" style="height:42%;background:rgba(59,130,246,0.3);"></div>
+          <div class="spark-bar" style="height:38%;background:rgba(59,130,246,0.3);"></div>
+          <div class="spark-bar" style="height:55%;background:rgba(59,130,246,0.5);"></div>
+          <div class="spark-bar" style="height:48%;background:rgba(59,130,246,0.4);"></div>
+          <div class="spark-bar" style="height:42%;background:rgba(59,130,246,0.5);"></div>
+          <div class="spark-bar" style="height:40%;background:rgba(59,130,246,0.4);"></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-type">Counter · Data</div>
+        <div class="panel-metric" style="color: var(--red);">14,280</div>
+        <div class="panel-label">Consumer Lag · events-topic</div>
+        <div class="spark">
+          <div class="spark-bar" style="height:20%;background:rgba(239,68,68,0.3);"></div>
+          <div class="spark-bar" style="height:35%;background:rgba(239,68,68,0.4);"></div>
+          <div class="spark-bar" style="height:55%;background:rgba(239,68,68,0.5);"></div>
+          <div class="spark-bar" style="height:70%;background:rgba(239,68,68,0.6);"></div>
+          <div class="spark-bar" style="height:85%;background:rgba(239,68,68,0.7);"></div>
+          <div class="spark-bar" style="height:95%;background:rgba(239,68,68,0.8);"></div>
+          <div class="spark-bar" style="height:100%;background:rgba(239,68,68,1);"></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-type">Gauge · Database</div>
+        <div class="panel-metric" style="color: var(--teal);">99.7%</div>
+        <div class="panel-label">Cache Hit Ratio · pg-primary</div>
+        <div class="spark">
+          <div class="spark-bar" style="height:98%;background:rgba(20,184,166,0.5);"></div>
+          <div class="spark-bar" style="height:99%;background:rgba(20,184,166,0.5);"></div>
+          <div class="spark-bar" style="height:97%;background:rgba(20,184,166,0.4);"></div>
+          <div class="spark-bar" style="height:99%;background:rgba(20,184,166,0.5);"></div>
+          <div class="spark-bar" style="height:100%;background:rgba(20,184,166,0.6);"></div>
+          <div class="spark-bar" style="height:99%;background:rgba(20,184,166,0.5);"></div>
+          <div class="spark-bar" style="height:99%;background:rgba(20,184,166,0.5);"></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-type">Time Series · ML</div>
+        <div class="panel-metric" style="color: var(--purple);">87%</div>
+        <div class="panel-label">GPU Utilization · a100-node-07</div>
+        <div class="spark">
+          <div class="spark-bar" style="height:70%;background:rgba(168,85,247,0.4);"></div>
+          <div class="spark-bar" style="height:82%;background:rgba(168,85,247,0.5);"></div>
+          <div class="spark-bar" style="height:75%;background:rgba(168,85,247,0.4);"></div>
+          <div class="spark-bar" style="height:88%;background:rgba(168,85,247,0.6);"></div>
+          <div class="spark-bar" style="height:85%;background:rgba(168,85,247,0.5);"></div>
+          <div class="spark-bar" style="height:87%;background:rgba(168,85,247,0.6);"></div>
+          <div class="spark-bar" style="height:90%;background:rgba(168,85,247,0.6);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETUP SECTION -->
+<section id="setup">
+  <div class="section-header">
+    <span class="section-tag">Setup</span>
+    <h2 class="section-title">Getting Started in 5 Steps</h2>
+  </div>
+  <div class="setup-steps">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-title">Install Grafana</div>
+      <div class="step-desc">Deploy Grafana via Docker or Helm. Use the official Grafana Helm chart for Kubernetes environments.</div>
+      <div class="step-code">helm install grafana grafana/grafana</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-title">Add Prometheus</div>
+      <div class="step-desc">Configure Prometheus as your primary data source. Enable remote_write for long-term storage if needed.</div>
+      <div class="step-code">datasources: prometheus:9090</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-title">Import Dashboards</div>
+      <div class="step-desc">Use the Grafana UI or API to import community dashboards by ID from grafana.com/grafana/dashboards.</div>
+      <div class="step-code">POST /api/dashboards/import</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-title">Deploy Exporters</div>
+      <div class="step-desc">Install node_exporter, kube-state-metrics, and any service-specific exporters as DaemonSets or sidecars.</div>
+      <div class="step-code">kubectl apply -f exporters/</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">05</div>
+      <div class="step-title">Configure Alerts</div>
+      <div class="step-desc">Set Grafana alerting rules or Prometheus alerting rules with Alertmanager routing to PagerDuty/Slack.</div>
+      <div class="step-code">alerting: rules/*.yaml</div>
+    </div>
+  </div>
+</section>
+
+<!-- GITHUB SECTION -->
+<section id="github" style="padding-bottom:100px;">
+  <div class="github-banner">
+    <div style="font-size:40px;margin-bottom:1rem;">◈</div>
+    <div class="github-title">Open Source on GitHub</div>
+    <div class="github-desc">
+      All dashboard JSON exports, PromQL queries, Helm values, and exporter configs from this guide are available in the GitHub repository. Star it to track updates as the ecosystem evolves.
+    </div>
+    <div class="btn-group">
+      <a href="https://github.com/your-org/grafana-dashboards-guide" class="btn-primary" target="_blank">
+        ★ View on GitHub
+      </a>
+      <a href="https://github.com/your-org/grafana-dashboards-guide/archive/refs/heads/main.zip" class="btn-outline">
+        ↓ Download ZIP
+      </a>
+    </div>
+    <div class="repo-url">
+      <a href="https://github.com/your-org/grafana-dashboards-guide">github.com/your-org/grafana-dashboards-guide</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Grafana<span>Ref</span></div>
+    <ul class="footer-links">
+      <li><a href="#teams">Teams</a></li>
+      <li><a href="#queries">Queries</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="https://grafana.com/grafana/dashboards/" target="_blank">Grafana.com ↗</a></li>
+    </ul>
+    <div class="footer-copy">Built for engineers · Open source · Not affiliated with Grafana Labs</div>
+  </div>
+</footer>
+
+</body>
+</html>
