@@ -368,7 +368,12 @@
     border-radius: 3px;
     white-space: nowrap;
     flex-shrink: 0;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: opacity 0.2s;
   }
+  .dash-id:hover { opacity: 0.75; text-decoration: underline; }
 
   .dash-desc {
     font-size: 12px;
@@ -802,7 +807,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Node Exporter Full</div>
-            <span class="dash-id id-sre">ID 1860</span>
+            <a href="https://grafana.com/grafana/dashboards/1860" target="_blank" class="dash-id id-sre">ID 1860 ↗</a>
           </div>
           <div class="dash-desc">The most-downloaded dashboard on Grafana with 20M+ installs. Covers CPU, memory, disk I/O, network, filesystem usage and load average per host with full drill-down capability.</div>
           <div class="use-case-label">Use Cases</div>
@@ -816,7 +821,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Kubernetes Cluster Overview</div>
-            <span class="dash-id id-sre">ID 7249</span>
+            <a href="https://grafana.com/grafana/dashboards/7249" target="_blank" class="dash-id id-sre">ID 7249 ↗</a>
           </div>
           <div class="dash-desc">End-to-end visibility into pod status, resource quotas, node pressure, namespace usage, scheduling events, and HPA scaling activity across all k8s clusters.</div>
           <div class="use-case-label">Use Cases</div>
@@ -829,10 +834,10 @@
         </div>
         <div class="dash-item">
           <div class="dash-item-header">
-            <div class="dash-item-name">USE Method: System</div>
-            <span class="dash-id id-sre">ID 405</span>
+            <div class="dash-item-name">USE Method / Node + Cluster</div>
+            <a href="https://grafana.com/grafana/dashboards/12136" target="_blank" class="dash-id id-sre">ID 12136 / 12135 ↗</a>
           </div>
-          <div class="dash-desc">Brendan Gregg's Utilization/Saturation/Errors methodology applied per resource. Enables systematic performance analysis by identifying bottlenecks before they become outages.</div>
+          <div class="dash-desc">Brendan Gregg's Utilization/Saturation/Errors methodology applied per resource. Node-level (12136) and Cluster-level (12135) variants. Enables systematic bottleneck analysis before outages.</div>
           <div class="use-case-label">Use Cases</div>
           <div class="use-cases">
             <span class="uc-tag">Bottleneck analysis</span>
@@ -843,7 +848,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Alertmanager Overview</div>
-            <span class="dash-id id-sre">ID 9578</span>
+            <a href="https://grafana.com/grafana/dashboards/9578" target="_blank" class="dash-id id-sre">ID 9578 ↗</a>
           </div>
           <div class="dash-desc">Full visibility into active alerts, silences, inhibitions, firing groups and notification routing. Essential for on-call teams managing alert fatigue.</div>
           <div class="use-case-label">Use Cases</div>
@@ -869,7 +874,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">GitHub Actions Metrics</div>
-            <span class="dash-id id-devops">Custom</span>
+            <a href="https://github.com/github-actions-dashboard/grafana" target="_blank" class="dash-id id-devops">Custom ↗</a>
           </div>
           <div class="dash-desc">Tracks workflow run durations, failure rates, queue times, runner pool utilization, and per-repository CI cost over time. Hooks into GitHub's REST API via custom exporter.</div>
           <div class="use-case-label">Use Cases</div>
@@ -882,7 +887,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">ArgoCD Application Status</div>
-            <span class="dash-id id-devops">ID 14584</span>
+            <a href="https://grafana.com/grafana/dashboards/14584" target="_blank" class="dash-id id-devops">ID 14584 ↗</a>
           </div>
           <div class="dash-desc">GitOps health at a glance: sync status, health grade, rollout progress, drift detection and reconciliation lag across all ArgoCD-managed applications.</div>
           <div class="use-case-label">Use Cases</div>
@@ -895,7 +900,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">DORA Metrics</div>
-            <span class="dash-id id-devops">Custom</span>
+            <a href="https://github.com/GoogleCloudPlatform/fourkeys" target="_blank" class="dash-id id-devops">Custom ↗</a>
           </div>
           <div class="dash-desc">Deployment frequency, lead time for changes, mean time to restore (MTTR), and change failure rate visualized over rolling 30/90-day windows. Industry benchmark for engineering velocity.</div>
           <div class="use-case-label">Use Cases</div>
@@ -908,7 +913,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Terraform Cloud Runs</div>
-            <span class="dash-id id-devops">Custom</span>
+            <a href="https://github.com/hashicorp/terraform-provider-grafana" target="_blank" class="dash-id id-devops">Custom ↗</a>
           </div>
           <div class="dash-desc">Plan/apply duration trends, resource change deltas, drift events, error rates and workspace-level cost estimates from the Terraform Cloud API.</div>
           <div class="use-case-label">Use Cases</div>
@@ -934,7 +939,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">RED Method Dashboard</div>
-            <span class="dash-id id-backend">Custom</span>
+            <a href="https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/" target="_blank" class="dash-id id-backend">Custom ↗</a>
           </div>
           <div class="dash-desc">Rate (requests/sec), Errors (error rate %), and Duration (p50/p95/p99 latency) per microservice endpoint. Tom Wilkie's methodology — the standard at Stripe and Twilio for API health SLOs.</div>
           <div class="use-case-label">Use Cases</div>
@@ -948,7 +953,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">NGINX Ingress Metrics</div>
-            <span class="dash-id id-backend">ID 9614</span>
+            <a href="https://grafana.com/grafana/dashboards/9614" target="_blank" class="dash-id id-backend">ID 9614 ↗</a>
           </div>
           <div class="dash-desc">Ingress-level request throughput, 4xx/5xx error rates, latency percentile heatmaps, upstream response times, active connections and TLS handshake durations.</div>
           <div class="use-case-label">Use Cases</div>
@@ -961,7 +966,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Jaeger / Tempo Traces</div>
-            <span class="dash-id id-backend">Custom</span>
+            <a href="https://grafana.com/docs/grafana/latest/datasources/tempo/" target="_blank" class="dash-id id-backend">Custom ↗</a>
           </div>
           <div class="dash-desc">Distributed trace latency heatmap with service dependency graph, error span drill-down, root cause tagging and trace comparison across deployments.</div>
           <div class="use-case-label">Use Cases</div>
@@ -974,7 +979,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">gRPC Server Metrics</div>
-            <span class="dash-id id-backend">ID 9733</span>
+            <a href="https://grafana.com/grafana/dashboards/9733" target="_blank" class="dash-id id-backend">ID 9733 ↗</a>
           </div>
           <div class="dash-desc">RPC method-level call rates, latency histograms, status code breakdown, stream counts and connection pool health for internal gRPC service meshes.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1000,7 +1005,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Apache Kafka Overview</div>
-            <span class="dash-id id-data">ID 7589</span>
+            <a href="https://grafana.com/grafana/dashboards/7589" target="_blank" class="dash-id id-data">ID 7589 ↗</a>
           </div>
           <div class="dash-desc">Topic-level throughput, consumer group lag, partition leadership health, broker JVM heap, ISR shrink rate and replication lag. Consumer lag is the #1 signal for data pipeline health.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1014,7 +1019,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">MLflow Experiment Tracker</div>
-            <span class="dash-id id-data">Custom</span>
+            <a href="https://mlflow.org/docs/latest/getting-started/index.html" target="_blank" class="dash-id id-data">Custom ↗</a>
           </div>
           <div class="dash-desc">Training loss curves, validation accuracy trends, GPU/CPU resource consumption per experiment, model registry promotion events and experiment comparison across runs.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1027,7 +1032,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Spark Structured Streaming</div>
-            <span class="dash-id id-data">ID 12477</span>
+            <a href="https://grafana.com/grafana/dashboards/12477" target="_blank" class="dash-id id-data">ID 12477 ↗</a>
           </div>
           <div class="dash-desc">Micro-batch duration, input rows/sec, processing rate vs trigger interval, memory spill, shuffle read/write and streaming query latency per Spark application.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1040,7 +1045,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">NVIDIA GPU Cluster</div>
-            <span class="dash-id id-data">ID 12239</span>
+            <a href="https://grafana.com/grafana/dashboards/12239" target="_blank" class="dash-id id-data">ID 12239 ↗</a>
           </div>
           <div class="dash-desc">Per-GPU utilization, memory bandwidth, temperature, power draw, NVLINK throughput and CUDA context counts. Critical for LLM training infrastructure at AI labs.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1066,7 +1071,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">PostgreSQL Overview</div>
-            <span class="dash-id id-db">ID 9628</span>
+            <a href="https://grafana.com/grafana/dashboards/9628" target="_blank" class="dash-id id-db">ID 9628 ↗</a>
           </div>
           <div class="dash-desc">QPS by query type, active/idle connections, cache hit ratio (critical signal), lock waits, autovacuum activity, replication lag and table/index bloat per database.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1080,7 +1085,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Redis Exporter</div>
-            <span class="dash-id id-db">ID 763</span>
+            <a href="https://grafana.com/grafana/dashboards/763" target="_blank" class="dash-id id-db">ID 763 ↗</a>
           </div>
           <div class="dash-desc">Commands/sec, cache hit/miss ratio, keyspace hit rate, memory fragmentation ratio, eviction rates, expired keys and replication offset per Redis instance.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1093,7 +1098,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Elasticsearch Cluster</div>
-            <span class="dash-id id-db">ID 2322</span>
+            <a href="https://grafana.com/grafana/dashboards/2322" target="_blank" class="dash-id id-db">ID 2322 ↗</a>
           </div>
           <div class="dash-desc">Index rate and search latency by index, shard allocation across nodes, JVM heap pressure, garbage collection pauses, circuit breaker trips and segment merge rates.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1106,7 +1111,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">ClickHouse Performance</div>
-            <span class="dash-id id-db">ID 14192</span>
+            <a href="https://grafana.com/grafana/dashboards/14192" target="_blank" class="dash-id id-db">ID 14192 ↗</a>
           </div>
           <div class="dash-desc">OLAP query throughput, merge performance, part counts, INSERT throughput, memory usage per query and background task health. Key for analytics-heavy stacks.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1132,7 +1137,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Falco Runtime Security</div>
-            <span class="dash-id id-security">Custom</span>
+            <a href="https://github.com/falcosecurity/falco/tree/master/rules" target="_blank" class="dash-id id-security">Custom ↗</a>
           </div>
           <div class="dash-desc">Container syscall violations, privilege escalation attempts, suspicious process spawns and file system writes per pod/namespace. Feeds directly from Falco's Prometheus metrics endpoint.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1145,7 +1150,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Auth0 / Okta Login Metrics</div>
-            <span class="dash-id id-security">Custom</span>
+            <a href="https://auth0.com/docs/deploy-monitor/logs/stream-auth0-log-events-to-datadog" target="_blank" class="dash-id id-security">Custom ↗</a>
           </div>
           <div class="dash-desc">Login success/failure rates, MFA adoption and bypass attempts, suspicious geo-distribution of logins, token refresh rates and session anomaly detection.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1158,7 +1163,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">WAF / DDoS Overview</div>
-            <span class="dash-id id-security">Custom</span>
+            <a href="https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-cloudflare/" target="_blank" class="dash-id id-security">Custom ↗</a>
           </div>
           <div class="dash-desc">Blocked request rate by WAF rule, attack signature triggers, geographic source heatmap of malicious traffic, rate limit hits and bot score distribution.</div>
           <div class="use-case-label">Use Cases</div>
@@ -1171,7 +1176,7 @@
         <div class="dash-item">
           <div class="dash-item-header">
             <div class="dash-item-name">Certificate Expiry Monitor</div>
-            <span class="dash-id id-security">ID 13230</span>
+            <a href="https://grafana.com/grafana/dashboards/13230" target="_blank" class="dash-id id-security">ID 13230 ↗</a>
           </div>
           <div class="dash-desc">Days-to-expiry per TLS certificate, issuer breakdown, auto-renewal pipeline health, certificate chain validity and HSTS configuration status across all services.</div>
           <div class="use-case-label">Use Cases</div>
